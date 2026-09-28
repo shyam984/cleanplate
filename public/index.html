@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Clean Plate - free online Bhabhi Thulla card game</title>
+<meta name="description" content="Clean Plate is a free multiplayer Bhabhi (Thulla) card game. Create a private room, share the 6-digit code, and race to empty your hand before your friends - or get stuck with the Leftovers. No ads, no purchases.">
+<meta name="keywords" content="bhabhi card game online, thulla card game, free online card game, play cards with friends, indian card game online">
+<meta property="og:title" content="Clean Plate - free online Bhabhi Thulla card game">
+<meta property="og:description" content="Empty your hand before everyone else, or get stuck holding the Leftovers. Free, no ads, no purchases.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#241521">
+<style>
+:root{--bg:#241521;--panel:#34202f;--panel2:#402838;--line:#5c3a4f;--cream:#f7ead2;--mute:#c8a8bd;--gold:#f2a93b;--chili:#e2513f;--mint:#6fae8a;
+--c0:#e2513f;--c1:#4a9fc9;--c2:#6fae8a;--c3:#f2a93b;--c4:#b579c9}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0}
+body{background:radial-gradient(1100px 650px at 50% -8%,#3d2438,var(--bg));color:var(--cream);font:16px/1.4 "Century Gothic","Trebuchet MS",system-ui,sans-serif;overflow:hidden}
+h1,h2{font-family:"Futura","Century Gothic","Trebuchet MS",sans-serif;font-weight:800;margin:0}
+.screen{display:none;height:100%;overflow:auto;padding:max(16px,env(safe-area-inset-top)) 16px 24px}
+.screen.on{display:flex;flex-direction:column;align-items:center}
+.wrap{width:100%;max-width:520px;display:flex;flex-direction:column;gap:14px}
+.brand{font-size:42px;letter-spacing:.5px;text-align:center;margin-top:8px}
+.tag{text-align:center;color:var(--mute);margin:-8px 0 4px}
+.card-ui{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px}
+.row{display:flex;gap:10px;align-items:center}
+.grow{flex:1}
+button{font:inherit;color:var(--cream);background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:12px 16px;cursor:pointer;min-height:48px}
+button:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+button.primary{background:var(--gold);color:#2b1a12;border-color:var(--gold);font-weight:800}
+button:disabled{opacity:.4;cursor:not-allowed}
+button.sel{outline:3px solid var(--gold);background:#523150}
+input{font:inherit;color:var(--cream);background:#1c1120;border:1px solid var(--line);border-radius:14px;padding:12px 14px;min-height:48px;width:100%}
+.coins{font-size:30px;font-weight:800;color:var(--gold)}
+.small{color:var(--mute);font-size:14px}
+.grid{display:grid;gap:10px}
+.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr 1fr}
+.big{font-size:22px;font-weight:800;padding:18px 8px}
+.code{font-size:44px;letter-spacing:6px;text-align:center;font-family:"Futura","Century Gothic",sans-serif;font-weight:800}
+.seat{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:14px;background:#1c1120;border-left:8px solid var(--line)}
+.seat.empty{opacity:.55;border-left-color:transparent;border:1px dashed var(--line)}
+.av{font-size:26px}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--mint);display:inline-block}
+.dot.off{background:var(--chili)}
+#game{padding:8px;justify-content:flex-start;overflow:hidden}
+#game .wrap{max-width:920px;height:100%;gap:8px}
+#opps{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
+.chip{position:relative;flex:1;min-width:96px;background:var(--panel);border:2px solid var(--line);border-radius:12px;padding:6px 8px;font-size:12px;line-height:1.25}
+.chip.turn{background:var(--panel2);box-shadow:0 0 0 2px var(--gold)}
+.chip b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13px}
+.chip .cnt{color:var(--mute)}
+#table{flex:1;min-height:0;background:radial-gradient(ellipse at 50% 40%,#3a2337,#221320);border:2px solid var(--line);border-radius:24px;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+#pile{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center;min-height:96px}
+#tableMsg{position:absolute;top:10px;left:0;right:0;text-align:center;font-size:14px;color:var(--mute);padding:0 12px}
+#leadTag{position:absolute;top:10px;right:14px;font-size:13px;background:#00000055;border-radius:10px;padding:4px 10px}
+.pcard{position:relative}
+.pcard .tag{position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--mute);white-space:nowrap}
+.cardface{width:52px;height:74px;border-radius:8px;background:var(--cream);color:#241521;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;font-size:20px;box-shadow:0 3px 0 #0004;border:1px solid #0002}
+.cardface.red{color:var(--chili)}
+.cardface small{font-size:11px;font-weight:700;opacity:.85}
+#hand{display:flex;gap:8px;overflow-x:auto;padding:10px 6px 4px;min-height:100px;align-items:flex-end}
+.hcard{flex:none;cursor:pointer;transition:transform .12s}
+.hcard .cardface{width:56px;height:80px;font-size:22px}
+.hcard.legal .cardface{outline:3px solid var(--gold);transform:translateY(-8px)}
+.hcard.illegal{opacity:.4;cursor:not-allowed}
+#bar{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:8px 12px}
+#msg{flex:1;font-size:14px}
+dialog{background:var(--panel);color:var(--cream);border:1px solid var(--line);border-radius:18px;max-width:360px;padding:20px}
+dialog::backdrop{background:#000a}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--gold);color:#2b1a12;padding:12px 18px;border-radius:14px;font-weight:800;opacity:0;pointer-events:none;transition:opacity .2s;z-index:9;max-width:90%}
+#toast.on{opacity:1}
+#net{position:fixed;top:0;left:0;right:0;background:var(--chili);color:#fff0;color:#200;text-align:center;font-weight:700;padding:6px;display:none;z-index:9}
+.res{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:10px 12px;border-radius:14px;background:#1c1120}
+.pos{font-family:"Futura","Century Gothic",sans-serif;font-size:22px;width:44px;font-weight:800}
+.plus{font-weight:800}
+#splat{position:fixed;inset:0;pointer-events:none;display:flex;align-items:center;justify-content:center;z-index:20;opacity:0}
+#splat.go{animation:splatIn .9s ease-out forwards}
+#splat .food{font-size:120px;transform:scale(.2) rotate(-30deg)}
+#splat.go .food{animation:foodFly .55s cubic-bezier(.3,1.6,.4,1) forwards}
+#splat .msg{position:absolute;bottom:38%;left:50%;transform:translateX(-50%);background:#000a;padding:10px 18px;border-radius:14px;font-weight:800;font-size:16px;white-space:nowrap;opacity:0}
+#splat.go .msg{animation:msgIn .4s ease-out .35s forwards}
+@keyframes splatIn{0%{opacity:0}8%{opacity:1}75%{opacity:1}100%{opacity:0}}
+@keyframes foodFly{0%{transform:scale(.15) rotate(-40deg) translateY(-140px)}70%{transform:scale(1.15) rotate(6deg) translateY(0)}85%{transform:scale(.9) rotate(-4deg)}100%{transform:scale(1) rotate(0)}}
+@keyframes msgIn{0%{opacity:0;transform:translate(-50%,10px)}100%{opacity:1;transform:translate(-50%,0)}}
+@media (prefers-reduced-motion:reduce){#splat.go,#splat.go .food,#splat.go .msg{animation:none;opacity:1}}
+</style>
+</head>
+<body>
+<div id="net">Connection lost. Reconnecting...</div>
+<div id="toast" role="status"></div>
+<div id="splat" aria-hidden="true"><div class="food">🥧</div><div class="msg" id="splatMsg"></div></div>
+
+<!-- HOME -->
+<section id="home" class="screen"><div class="wrap">
+  <h1 class="brand">Clean Plate</h1>
+  <p class="tag">Empty your hand first - or get stuck with the Leftovers. Free, no ads.</p>
+  <div class="card-ui" id="nameCard" hidden>
+    <label class="small" for="nameIn">Pick a player name</label>
+    <div class="row"><input id="nameIn" maxlength="14" placeholder="Your name" autocomplete="nickname"><button class="primary" id="nameGo">Start playing</button></div>
+  </div>
+  <div id="homeMain" hidden>
+    <div class="card-ui row"><span class="av" id="hAv"></span><div class="grow"><b id="hName"></b><div class="small">Coins</div></div><div class="coins" id="hCoins">0</div></div>
+    <div class="card-ui"><div class="row"><div class="grow"><b>FREE 100 COINS</b><div class="small" id="claimTxt"></div></div><button class="primary" id="claimBtn">CLAIM</button></div></div>
+    <div class="grid g2"><button class="primary big" id="toCreate">Create game</button><button class="big" id="toJoin">Join game</button></div>
+    <div class="card-ui" id="joinBox" hidden>
+      <h2>Join game</h2>
+      <div class="small" style="margin:6px 0">Enter room number</div>
+      <div class="row"><input id="codeIn" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="______"><button class="primary" id="joinGo">Join</button></div>
+    </div>
+  </div>
+</div></section>
+
+<!-- CREATE -->
+<section id="create" class="screen"><div class="wrap">
+  <h2>Create game</h2>
+  <div class="card-ui"><div class="small" style="margin-bottom:8px">Players</div>
+    <div class="grid g2"><button class="big" data-max="4">4 players</button><button class="big" data-max="5">5 players</button></div></div>
+  <div class="card-ui"><div class="small" style="margin-bottom:8px">Entry</div>
+    <div class="grid g3" id="entries"></div></div>
+  <div class="card-ui small" id="createInfo"></div>
+  <div class="grid g2"><button id="createBack">Back</button><button class="primary" id="createGo">Create room</button></div>
+</div></section>
+
+<!-- WAITING ROOM -->
+<section id="wait" class="screen"><div class="wrap">
+  <div class="small" style="text-align:center">ROOM</div>
+  <div class="code" id="wCode"></div>
+  <div class="row" style="justify-content:center"><button id="copyBtn">Copy code</button><button id="shareBtn">Share</button></div>
+  <div class="card-ui"><div class="small" style="margin-bottom:8px">Players</div><div class="grid" id="wSeats"></div></div>
+  <div class="card-ui"><b>Entry: <span id="wEntry"></span> coins</b><div class="small" id="wPlan" style="margin-top:6px"></div></div>
+  <div class="grid g2"><button id="wLeave">LEAVE ROOM</button><button class="primary" id="wStart">START GAME</button></div>
+</div></section>
+
+<!-- GAME -->
+<section id="game" class="screen"><div class="wrap">
+  <div id="opps"></div>
+  <div id="table">
+    <div id="tableMsg"></div>
+    <div id="leadTag"></div>
+    <div id="pile"></div>
+  </div>
+  <div id="hand"></div>
+  <div id="bar">
+    <div id="msg"></div>
+    <button id="gLeave">Leave</button>
+  </div>
+</div></section>
+
+<!-- RESULT -->
+<section id="result" class="screen"><div class="wrap">
+  <h2 style="text-align:center;font-size:30px">GAME FINISHED</h2>
+  <div class="grid" id="resList"></div>
+  <div class="card-ui small" id="resNote"></div>
+  <button class="primary big" id="resHome">Back to lobby</button>
+</div></section>
+
+<dialog id="leaveDlg"><h2>Leave game?</h2><p id="leaveTxt"></p>
+  <div class="grid g2"><button id="leaveNo">CANCEL</button><button class="primary" id="leaveYes">CONFIRM</button></div></dialog>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+const $=s=>document.querySelector(s), fmt=n=>Number(n).toLocaleString('en-US');
+const COL=['#e2513f','#4a9fc9','#6fae8a','#f2a93b','#b579c9'], AV=['🍕','🌮','🍜','🍛','🥟','🍱','🍣'], FOODS=['🥧','🌭','🍩','🍔','🥞','🍉','🧁'];
+const RANKS='23456789TJQKA';
+const socket=io(); let me=null, room=null, cfg={max:4,entry:500}, claimLeft=0, claimStamp=0, lastEventTag=null;
+const emit=(ev,d)=>new Promise(r=>socket.emit(ev,d||{},r));
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('on'),2600)}
+async function act(ev,d){const r=await emit(ev,d);if(r&&r.error)toast(r.error);return r}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id))}
+function cardLabel(c){return c[0]==='T'?'10':c[0]}
+function cardSuitSym(c){return suitSym(c[1])}
+function suitSym(s){return {C:'♣',D:'♦',H:'♥',S:'♠'}[s]}
+function isRed(c){return c[1]==='D'||c[1]==='H'}
+
+// ---- connection / identity ----
+async function hello(name){
+  const r=await emit('hello',{secret:localStorage.getItem('cp_secret')||'',name});
+  if(r.error){toast(r.error);return false}
+  localStorage.setItem('cp_secret',r.secret);setMe(r.me);setRoom(r.room);return true;
+}
+socket.on('connect',async()=>{$('#net').style.display='none';
+  if(localStorage.getItem('cp_secret')){await hello('')}
+  else{$('#nameCard').hidden=false;$('#homeMain').hidden=true;show('home')}});
+socket.on('disconnect',()=>{$('#net').style.display='block'});
+socket.on('me',setMe);
+socket.on('room',setRoom);
+$('#nameGo').onclick=async()=>{if(await hello($('#nameIn').value))$('#nameCard').hidden=true};
+
+function setMe(m){me=m;claimLeft=m.claimIn;claimStamp=performance.now();
+  $('#nameCard').hidden=true;$('#homeMain').hidden=false;
+  $('#hAv').textContent=AV[m.avatar%AV.length];$('#hName').textContent=m.name;$('#hCoins').textContent=fmt(m.coins);
+  if(!room)show('home');updateClaim();if(room)renderRoom()}
+function updateClaim(){
+  const left=Math.max(0,claimLeft-(performance.now()-claimStamp));
+  const b=$('#claimBtn');b.disabled=left>0;
+  if(left>0){const s=Math.ceil(left/1000);$('#claimTxt').textContent=`Available in ${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;b.textContent='WAIT'}
+  else{$('#claimTxt').textContent='Ready: +100 coins';b.textContent='CLAIM'}
+}
+setInterval(updateClaim,250);
+$('#claimBtn').onclick=async()=>{const r=await act('claim');if(r.ok)toast('+100 coins')};
+
+// ---- home / create / join ----
+$('#toJoin').onclick=()=>{$('#joinBox').hidden=!$('#joinBox').hidden;$('#codeIn').focus()};
+$('#joinGo').onclick=()=>act('joinRoom',{code:$('#codeIn').value});
+$('#codeIn').addEventListener('keydown',e=>{if(e.key==='Enter')$('#joinGo').click()});
+$('#toCreate').onclick=()=>{show('create');drawCreate()};
+$('#createBack').onclick=()=>show('home');
+$('#createGo').onclick=()=>act('createRoom',cfg);
+$('#entries').innerHTML=[120,300,500,1000,2000].map(e=>`<button class="big" data-entry="${e}">${fmt(e)}</button>`).join('');
+document.querySelectorAll('[data-max]').forEach(b=>b.onclick=()=>{cfg.max=+b.dataset.max;drawCreate()});
+document.querySelectorAll('[data-entry]').forEach(b=>b.onclick=()=>{cfg.entry=+b.dataset.entry;drawCreate()});
+function drawCreate(){
+  document.querySelectorAll('[data-max]').forEach(b=>b.classList.toggle('sel',+b.dataset.max===cfg.max));
+  document.querySelectorAll('[data-entry]').forEach(b=>b.classList.toggle('sel',+b.dataset.entry===cfg.entry));
+  const E=cfg.entry,n=cfg.max,mid=n-2,each=Math.floor((n*E-2*E)/mid);
+  $('#createInfo').innerHTML=`Pool ${fmt(n*E)} coins. Winner ${fmt(2*E)}, places 2 to ${n-1} ${fmt(each)} each, last place (the Leftovers) 0.`+(me&&me.coins<E?`<br><b style="color:var(--chili)">Not enough coins.</b>`:'');
+}
+
+// ---- room routing ----
+function setRoom(r){room=r;if(!r){if(me)show('home');return}renderRoom()}
+function renderRoom(){
+  if(!room)return;
+  if(room.status==='WAITING'||room.status==='STARTING'){renderWait();show('wait')}
+  else if(room.status==='PLAYING'){renderGame();show('game')}
+  else if(room.status==='FINISHED'){renderGame();renderResult();show('result')}
+}
+function renderWait(){
+  $('#wCode').textContent=room.code;$('#wEntry').textContent=fmt(room.entry);
+  $('#wSeats').innerHTML=Array.from({length:room.max},(_,i)=>{const s=room.seats[i];
+    return s?`<div class="seat" style="border-left-color:${COL[i]}"><span class="av">${AV[s.avatar%AV.length]}</span><b class="grow">${esc(s.name)}${s.pid===room.hostId?' (host)':''}</b><span class="dot ${s.connected?'':'off'}"></span></div>`
+            :`<div class="seat empty"><span class="av">·</span><span class="grow">Waiting…</span></div>`}).join('');
+  const p=room.plan;
+  $('#wPlan').innerHTML=p?`Winner: ${fmt(p.prizes[0])} coins<br>Places 2 to ${room.max-1}: ${fmt(p.prizes[1])} each<br>Last place (Leftovers): 0<br>Total pool: ${fmt(p.pool)}`+(p.remainder?`<br>Game remainder: ${fmt(p.remainder)}`:''):`<b style="color:var(--chili)">${esc(room.planError)}</b>`;
+  const host=me&&room.hostId===me.id, full=room.seats.length===room.max;
+  const b=$('#wStart');b.disabled=!host||!full||!p;b.textContent=host?(full?'START GAME':`WAITING FOR ${room.max-room.seats.length}`):'HOST STARTS';
+}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+$('#copyBtn').onclick=async()=>{try{await navigator.clipboard.writeText(room.code);toast('Code copied')}catch{toast('Room '+room.code)}};
+$('#shareBtn').onclick=()=>{const t=`Join my Clean Plate game! Room ${room.code} at ${location.origin}`;
+  if(navigator.share)navigator.share({text:t}).catch(()=>{});else navigator.clipboard.writeText(t).then(()=>toast('Invite copied'))};
+$('#wStart').onclick=()=>act('start');
+function askLeave(){$('#leaveTxt').textContent=room&&room.status==='PLAYING'?'Leaving a game after it starts may affect your position. Your entry is not refunded.':'You will leave this room.';$('#leaveDlg').showModal()}
+$('#wLeave').onclick=askLeave;$('#gLeave').onclick=askLeave;
+$('#leaveNo').onclick=()=>$('#leaveDlg').close();
+$('#leaveYes').onclick=async()=>{$('#leaveDlg').close();await act('leaveRoom');room=null;show('home')};
+$('#resHome').onclick=async()=>{await act('leaveRoom');room=null;show('home')};
+
+// ---- game UI ----
+const mySeat=()=>room?room.seats.findIndex(s=>s.pid===me.id):-1;
+function cardFaceHTML(c){
+  return `<div class="cardface ${isRed(c)?'red':''}"><div>${cardLabel(c)}</div><small>${cardSuitSym(c)}</small></div>`;
+}
+function renderGame(){
+  const g=room.g;if(!g)return;
+  const my=mySeat();
+  $('#opps').innerHTML=room.seats.map((s,i)=>{const fp=g.finished.indexOf(i);
+    return `<div class="chip ${g.turn===i?'turn':''}" style="border-color:${COL[i]}"><b>${AV[s.avatar%AV.length]} ${esc(s.name)}${i===my?' (you)':''}</b><span class="cnt">${s.cards} card${s.cards===1?'':'s'}</span> ${fp>=0?'· '+['1st','2nd','3rd','4th','5th'][fp]:''}${s.abandoned?' · auto':(!s.connected?' · away':'')}</div>`}).join('');
+
+  const leadTag=$('#leadTag');
+  if(g.leadSuit){leadTag.textContent='Leads: '+suitSym(g.leadSuit);leadTag.style.background='#00000055'}
+  else{leadTag.textContent='';leadTag.style.background='transparent'}
+  $('#pile').innerHTML=(g.pile||[]).map(pc=>`<div class="pcard">${cardFaceHTML(pc.card)}<div class="tag">${esc(nameOf(pc.seat))}</div></div>`).join('')||'<div class="small">New trick - waiting for the lead.</div>';
+
+  const mine=g.turn===my, playing=room.status==='PLAYING';
+  $('#tableMsg').textContent=g.log||'';
+  $('#msg').textContent=playing&&mine?'Your turn - tap a card.':(playing?`Waiting for ${nameOf(g.turn)}...`:'');
+
+  const hand=(g.hand||[]).slice().sort((a,b)=>{ if(a[1]!==b[1]) return a[1]<b[1]?-1:1; return RANKS.indexOf(a[0])-RANKS.indexOf(b[0]); });
+  $('#hand').innerHTML=hand.map(c=>{const legal=mine&&g.legal.includes(c);
+    return `<div class="hcard ${mine?(legal?'legal':'illegal'):''}" data-card="${c}">${cardFaceHTML(c)}</div>`}).join('');
+  document.querySelectorAll('.hcard').forEach(el=>el.onclick=()=>{
+    if(!mine)return; const c=el.dataset.card; if(!g.legal.includes(c)){toast(g.leadSuit?'You must follow suit if you can.':'');return;}
+    act('play',{card:c});
+  });
+
+  if(g.event && JSON.stringify(g.event)!==lastEventTag){
+    lastEventTag=JSON.stringify(g.event);
+    if(g.event.type==='thulla') showSplat(`${nameOf(g.event.seat)} got Thulla'd! +${g.event.count} cards`);
+  }
+}
+function nameOf(seat){return room.seats[seat]?room.seats[seat].name:'?'}
+function showSplat(text){
+  const el=$('#splat'); el.querySelector('.food').textContent=FOODS[Math.floor(Math.random()*FOODS.length)];
+  $('#splatMsg').textContent=text; el.classList.remove('go'); void el.offsetWidth; el.classList.add('go');
+}
+function renderResult(){
+  const g=room.g;
+  $('#resList').innerHTML=g.results.map(r=>`<div class="res" style="border-left:8px solid ${COL[r.seat]}"><span class="pos">${['','1st','2nd','3rd','4th','5th'][r.pos]}</span><b>${esc(r.name)}</b><span class="plus" style="color:${r.prize>0?'var(--mint)':'var(--mute)'}">+${fmt(r.prize)} coins</span></div>`).join('');
+  const my=g.results.find(r=>r.seat===mySeat());
+  $('#resNote').innerHTML=`Entry ${fmt(room.entry)} each. Total pool ${fmt(room.plan.pool)}.`+(my?`<br>Your result: ${my.net>=0?'+':''}${fmt(my.net)} coins. Balance: ${fmt(me.coins)}.`:'')+(room.remainder?`<br>Game remainder: ${fmt(room.remainder)} coins.`:'');
+}
+</script>
+</body>
+</html>
